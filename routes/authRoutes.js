@@ -11,7 +11,6 @@ router.post("/register", async (req, res) => {
 
         const { username, password } = req.body;
 
-        // 📌 Validar que los datos existen
         if (!username || !password) {
             return res.status(400).json({ message: "Todos los campos son obligatorios" });
         }
