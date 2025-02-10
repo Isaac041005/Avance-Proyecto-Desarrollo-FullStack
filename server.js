@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Usa el puerto dinámico de Render
 
 // 🔍 Verificar si las variables de entorno se están cargando
 console.log("🔍 Verificando variables de entorno...");
@@ -40,9 +40,12 @@ app.get("/", (req, res) => {
   res.send("🚀 API funcionando correctamente");
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => console.log(`🔥 Servidor corriendo en http://localhost:${PORT}`));
+// Iniciar el servidor y manejar errores
+const server = app.listen(PORT, () => {
+  console.log(`🔥 Servidor corriendo en el puerto ${PORT}`);
+});
 
-
-// Iniciar el servidor
-app.listen(PORT, () => console.log(`🔥 Servidor corriendo en http://localhost:${PORT}`));
+// Manejar error si el puerto está en uso
+server.on("error", (err) => {
+  console.error("❌ Error en el servidor:", err);
+});
