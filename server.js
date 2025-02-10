@@ -4,12 +4,12 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes"); 
-const financeRoutes = require("./routes/financeRoutes");
+const financeRoutes = require("./routes/financeRoutes"); 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Verificar conexión a MongoDB
+// 🔍 Verificar conexión a MongoDB
 console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
 
 mongoose
@@ -31,6 +31,12 @@ app.use("/api/finance", financeRoutes);
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.send("🚀 API funcionando correctamente");
+});
+
+// Manejo de errores global
+app.use((err, req, res, next) => {
+  console.error("❌ Error del servidor:", err.stack);
+  res.status(500).json({ message: "Error interno del servidor" });
 });
 
 app.listen(PORT, () => console.log(`🔥 Servidor corriendo en el puerto ${PORT}`));
