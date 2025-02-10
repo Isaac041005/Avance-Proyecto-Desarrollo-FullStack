@@ -9,9 +9,19 @@ const financeRoutes = require("./routes/financeRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 🔍 Verificar conexión a MongoDB
-console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
+// 📌 Middlewares
+app.use(cors());
+app.use(express.json()); // 📌 IMPORTANTE: Esto permite recibir JSON en las peticiones
 
+// 📌 Middleware para depurar datos recibidos
+app.use((req, res, next) => {
+    console.log("📥 Petición recibida:", req.method, req.path);
+    console.log("📦 Datos enviados:", req.body);
+    next();
+});
+
+// 📌 Conexión a MongoDB
+console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
 mongoose
   .connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Base de datos conectada correctamente"))
@@ -20,20 +30,16 @@ mongoose
     process.exit(1);
   });
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
-// Rutas de API
+// 📌 Rutas de API
 app.use("/api/auth", authRoutes);
 app.use("/api/finance", financeRoutes);
 
-// Ruta de prueba
+// 📌 Ruta de prueba
 app.get("/", (req, res) => {
   res.send("🚀 API funcionando correctamente");
 });
 
-// Manejo de errores global
+// 📌 Manejo de errores global
 app.use((err, req, res, next) => {
   console.error("❌ Error del servidor:", err.stack);
   res.status(500).json({ message: "Error interno del servidor" });
