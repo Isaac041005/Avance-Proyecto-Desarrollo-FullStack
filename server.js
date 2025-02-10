@@ -6,10 +6,16 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 📌 Verificar que DB_URL se está cargando correctamente
-console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
+// 🔍 Verificar si las variables de entorno se están cargando
+console.log("🔍 Verificando variables de entorno...");
+console.log("DB_URL:", process.env.DB_URL ? "✅ Definida" : "❌ No definida");
 
 // Conectar a MongoDB
+if (!process.env.DB_URL) {
+  console.error("❌ ERROR: La variable DB_URL no está definida.");
+  process.exit(1); // Detener la aplicación si no hay URL de conexión
+}
+
 mongoose
   .connect(process.env.DB_URL, {
     useNewUrlParser: true,
@@ -33,6 +39,10 @@ app.use("/api/transactions", require("./transaction"));
 app.get("/", (req, res) => {
   res.send("🚀 API funcionando correctamente");
 });
+
+// Iniciar el servidor
+app.listen(PORT, () => console.log(`🔥 Servidor corriendo en http://localhost:${PORT}`));
+
 
 // Iniciar el servidor
 app.listen(PORT, () => console.log(`🔥 Servidor corriendo en http://localhost:${PORT}`));
