@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Financiera</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Bienvenido a tu Panel Financiero</h1>
+    <button onclick="logout()">Cerrar Sesión</button>
+
+    <h2>Agregar Transacción</h2>
+    <input type="number" id="amount" placeholder="Cantidad">
+    <select id="type">
+        <option value="income">Ingreso</option>
+        <option value="expense">Gasto</option>
+    </select>
+    <input type="text" id="description" placeholder="Descripción">
+    <button onclick="addTransaction()">Agregar</button>
+
+    <h2>Tus Transacciones</h2>
+    <ul id="transaction-list"></ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
