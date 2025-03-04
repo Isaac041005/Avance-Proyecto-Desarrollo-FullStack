@@ -6,17 +6,17 @@ const router = express.Router();
 // 🔹 Crear transacción (Requiere autenticación)
 router.post("/transactions", authMiddleware, async (req, res) => {
     try {
-        const { amount, type, category } = req.body; // 🔹 Cambié "description" por "category"
+        const { amount, type, category } = req.body;
 
         if (!amount || !type || !category) {
             return res.status(400).json({ message: "Todos los campos son obligatorios" });
         }
 
         const transaction = new Transaction({
-            user: req.user.id,
+            userId: req.user.id, // 🔹 Corregido: Ahora coincide con el modelo
             amount,
             type,
-            category, // 🔹 Ahora coincide con el modelo
+            category,
         });
 
         await transaction.save();
@@ -30,7 +30,7 @@ router.post("/transactions", authMiddleware, async (req, res) => {
 // 🔹 Obtener todas las transacciones del usuario autenticado
 router.get("/transactions", authMiddleware, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ user: req.user.id });
+        const transactions = await Transaction.find({ userId: req.user.id }); // 🔹 Corregido
         res.json(transactions);
     } catch (error) {
         console.error("❌ Error al obtener transacciones:", error);
@@ -50,3 +50,4 @@ router.delete("/transactions/:id", authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
