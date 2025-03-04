@@ -6,8 +6,19 @@ const router = express.Router();
 // 🔹 Crear transacción (Requiere autenticación)
 router.post("/transactions", authMiddleware, async (req, res) => {
     try {
-        const { amount, type, description } = req.body;
-        const transaction = new Transaction({ user: req.user.id, amount, type, description });
+        const { amount, type, category } = req.body; // 🔹 Cambié "description" por "category"
+
+        if (!amount || !type || !category) {
+            return res.status(400).json({ message: "Todos los campos son obligatorios" });
+        }
+
+        const transaction = new Transaction({
+            user: req.user.id,
+            amount,
+            type,
+            category, // 🔹 Ahora coincide con el modelo
+        });
+
         await transaction.save();
         res.status(201).json(transaction);
     } catch (error) {
@@ -39,4 +50,3 @@ router.delete("/transactions/:id", authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
-
