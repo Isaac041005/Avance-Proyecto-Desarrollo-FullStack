@@ -1,14 +1,14 @@
 require("dotenv").config();
-console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
+console.log("🔍 Conectando a MongoDB con la URL:", 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const authRoutes = require("./routes/authRoutes"); 
-const financeRoutes = require("./routes/financeRoutes"); 
+const authRoutes = require("./routes/authRoutes");
+const financeRoutes = require("./routes/financeRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // 📌 Middlewares
 app.use(cors());
@@ -16,15 +16,18 @@ app.use(express.json()); // 📌 IMPORTANTE: Esto permite recibir JSON en las pe
 
 // 📌 Middleware para depurar datos recibidos
 app.use((req, res, next) => {
-    console.log("📥 Petición recibida:", req.method, req.path);
-    console.log("📦 Datos enviados:", req.body);
-    next();
+  console.log("📥 Petición recibida:", req.method, req.path);
+  console.log("📦 Datos enviados:", req.body);
+  next();
 });
 
 // 📌 Conexión a MongoDB
 console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL);
 mongoose
-  .connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("✅ Base de datos conectada correctamente"))
   .catch((err) => {
     console.error("❌ Error conectando a MongoDB:", err);
@@ -46,4 +49,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Error interno del servidor" });
 });
 
-app.listen(PORT, () => console.log(`🔥 Servidor corriendo en el puerto ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🔥 Servidor corriendo en el puerto ${PORT}`)
+);
