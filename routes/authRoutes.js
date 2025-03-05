@@ -7,17 +7,17 @@ const router = express.Router();
 // 📌 REGISTRO DE USUARIO
 router.post("/register", async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, email, password } = req.body;
 
-        if (!username || !password) {
+        if (!username || !email || !password) {
             return res.status(400).json({ message: "Todos los campos son obligatorios" });
         }
 
-        let user = await User.findOne({ username });
-        if (user) return res.status(400).json({ message: "El usuario ya existe" });
+        let user = await User.findOne({ email });
+        if (user) return res.status(400).json({ message: "El correo ya está registrado" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        user = new User({ username, password: hashedPassword });
+        user = new User({ username, email, password: hashedPassword });
         await user.save();
 
         res.status(201).json({ message: "Usuario registrado correctamente" });
@@ -30,13 +30,13 @@ router.post("/register", async (req, res) => {
 // 📌 INICIO DE SESIÓN
 router.post("/login", async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        if (!username || !password) {
+        if (!email || !password) {
             return res.status(400).json({ message: "Todos los campos son obligatorios" });
         }
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: "Usuario no encontrado" });
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -52,4 +52,3 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
-
