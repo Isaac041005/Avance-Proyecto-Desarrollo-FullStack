@@ -1,5 +1,6 @@
 require("dotenv").config();
-console.log("🔍 Conectando a MongoDB con la URL:", 
+console.log("🔍 Conectando a MongoDB con la URL:", process.env.DB_URL); // <--- Esta línea estaba incompleta
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
