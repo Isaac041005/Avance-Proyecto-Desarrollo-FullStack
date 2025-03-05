@@ -30,8 +30,20 @@ router.post("/transactions", authMiddleware, async (req, res) => {
 // 🔹 Obtener todas las transacciones del usuario autenticado
 router.get("/transactions", authMiddleware, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ userId: req.user.id }); // 📌 Se filtra por userId
-        res.json(transactions);
+        const { page = 1, limit = 10 } = req.query; // 📌 Parámetros de paginación
+
+        const transactions = await Transaction.find({ userId: req.user.id })
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Transaction.countDocuments({ userId: req.user.id });
+
+        res.json({
+            transactions,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
     } catch (error) {
         console.error("❌ Error al obtener transacciones:", error);
         res.status(500).json({ message: "Error al obtener las transacciones" });
