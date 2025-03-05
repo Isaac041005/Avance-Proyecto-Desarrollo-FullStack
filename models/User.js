@@ -3,7 +3,8 @@ const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: [true, "El nombre de usuario es obligatorio"], unique: true },
-  password: { type: String, required: [true, "La contraseña es obligatoria"] }
+  password: { type: String, required: [true, "La contraseña es obligatoria"] },
+  role: { type: String, enum: ["user", "admin"], default: "user" } // 📌 Añadir campo de rol
 });
 
 // 📌 Encriptar la contraseña antes de guardar
