@@ -2,16 +2,13 @@ const express = require("express");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
+const validationMiddleware = require("../middleware/validationMiddleware"); // 📌 Importar middleware de validación
 const router = express.Router();
 
-// 🔹 Crear transacción (Requiere autenticación y rol de usuario)
-router.post("/transactions", authMiddleware, roleMiddleware(["user", "admin"]), async (req, res) => {
+// 🔹 Crear transacción (Requiere autenticación, rol de usuario y validación de datos)
+router.post("/transactions", authMiddleware, roleMiddleware(["user", "admin"]), validationMiddleware, async (req, res) => {
     try {
         const { amount, type, category } = req.body;
-
-        if (!amount || !type || !category) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios" });
-        }
 
         const transaction = new Transaction({
             userId: req.user.id,
