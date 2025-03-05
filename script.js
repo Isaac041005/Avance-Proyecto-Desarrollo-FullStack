@@ -42,28 +42,46 @@ function logout() {
 }
 
 // 🔹 OBTENER TRANSACCIONES
-async function fetchTransactions() {
+async function fetchTransactions(page = 1) {
     const token = localStorage.getItem("token");
     if (!token) {
         window.location.href = "login.html";
         return;
     }
 
-    const response = await fetch(`${API_URL}/finance/transactions`, {
+    const response = await fetch(`${API_URL}/finance/transactions?page=${page}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${token}` }
     });
 
-    const transactions = await response.json();
+    const data = await response.json();
     const list = document.getElementById("transaction-list");
     list.innerHTML = "";
 
-    transactions.forEach(t => {
+    data.transactions.forEach(t => {
         const li = document.createElement("li");
         li.textContent = `${t.type === "income" ? "➕" : "➖"} ${t.amount} - ${t.description}`;
         list.appendChild(li);
     });
+
+    // 📌 Manejo de botones de paginación
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    for (let i = 1; i <= data.totalPages; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.onclick = () => fetchTransactions(i);
+        pagination.appendChild(button);
+    }
 }
+
+// 🔹 Cargar transacciones al cargar la página
+window.onload = () => {
+    if (window.location.pathname.includes("index.html")) {
+        fetchTransactions();
+    }
+};
 
 // 🔹 AGREGAR TRANSACCIÓN
 async function addTransaction() {
