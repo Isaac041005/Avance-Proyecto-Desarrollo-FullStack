@@ -13,10 +13,10 @@ router.post("/transactions", authMiddleware, async (req, res) => {
         }
 
         const transaction = new Transaction({
-            userId: req.user.id, // 🔹 Corregido: Ahora coincide con el modelo
+            userId: req.user.id, // 📌 Se asegura de usar "userId" en lugar de "user"
             amount,
             type,
-            category,
+            category
         });
 
         await transaction.save();
@@ -30,7 +30,7 @@ router.post("/transactions", authMiddleware, async (req, res) => {
 // 🔹 Obtener todas las transacciones del usuario autenticado
 router.get("/transactions", authMiddleware, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ userId: req.user.id }); // 🔹 Corregido
+        const transactions = await Transaction.find({ userId: req.user.id }); // 📌 Se filtra por userId
         res.json(transactions);
     } catch (error) {
         console.error("❌ Error al obtener transacciones:", error);
@@ -38,16 +38,6 @@ router.get("/transactions", authMiddleware, async (req, res) => {
     }
 });
 
-// 🔹 Eliminar una transacción (Protegido con JWT)
-router.delete("/transactions/:id", authMiddleware, async (req, res) => {
-    try {
-        await Transaction.findByIdAndDelete(req.params.id);
-        res.json({ message: "Transacción eliminada" });
-    } catch (error) {
-        console.error("❌ Error al eliminar la transacción:", error);
-        res.status(500).json({ message: "Error al eliminar la transacción" });
-    }
-});
-
 module.exports = router;
+
 
