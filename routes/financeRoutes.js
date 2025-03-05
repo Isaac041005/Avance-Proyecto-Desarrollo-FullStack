@@ -1,10 +1,11 @@
 const express = require("express");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 const router = express.Router();
 
-// 🔹 Crear transacción (Requiere autenticación)
-router.post("/transactions", authMiddleware, async (req, res) => {
+// 🔹 Crear transacción (Requiere autenticación y rol de usuario)
+router.post("/transactions", authMiddleware, roleMiddleware(["user", "admin"]), async (req, res) => {
     try {
         const { amount, type, category } = req.body;
 
@@ -13,7 +14,7 @@ router.post("/transactions", authMiddleware, async (req, res) => {
         }
 
         const transaction = new Transaction({
-            userId: req.user.id, // 📌 Se asegura de usar "userId" en lugar de "user"
+            userId: req.user.id,
             amount,
             type,
             category
@@ -27,10 +28,10 @@ router.post("/transactions", authMiddleware, async (req, res) => {
     }
 });
 
-// 🔹 Obtener todas las transacciones del usuario autenticado
-router.get("/transactions", authMiddleware, async (req, res) => {
+// 🔹 Obtener todas las transacciones del usuario autenticado (Requiere autenticación y rol de usuario)
+router.get("/transactions", authMiddleware, roleMiddleware(["user", "admin"]), async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query; // 📌 Parámetros de paginación
+        const { page = 1, limit = 10 } = req.query;
 
         const transactions = await Transaction.find({ userId: req.user.id })
             .limit(limit * 1)
